@@ -11,7 +11,7 @@ screen_width = 360
 screen_height = 640
 
 class AplikasiLogin:
-    def _init_(self, root):  # ← ini dua underscore ya
+    def __init__(self, root):  
         self.root = root
         self.root.title("Login Lucu")
         self.root.geometry(f"{screen_width}x{screen_height}")
