@@ -1,0 +1,189 @@
+import tkinter as tk
+from tkinter import messagebox
+from PIL import Image, ImageTk
+import os
+
+class AplikasiKelompok:
+    def _init_(self, root):
+        self.root = root
+        self.root.title("KIKI")
+        self.root.geometry("360x640")
+        self.root.resizable(False, False)
+
+        self.halaman_welcome()
+
+    def halaman_welcome(self):
+        current_dir = os.path.dirname(os.path.abspath(_file_))
+        welcome_path = os.path.join(current_dir, "images", "welcome.jpg")
+
+        img = Image.open(welcome_path)
+        img = img.resize((360, 640))
+        self.bg_welcome = ImageTk.PhotoImage(img)
+
+        self.canvas = tk.Canvas(self.root, width=360, height=640)
+        self.canvas.pack(fill="both", expand=True)
+        self.canvas.create_image(0, 0, anchor="nw", image=self.bg_welcome)
+
+        self.btn_login = tk.Button(self.root, text="LOGIN", font=("Times New Roman", 25, "bold"),
+                                   bg="#3EFF03", fg="white", activebackground="#03FFCD",
+                                   command=self.halaman_login, cursor="hand2", borderwidth=0)
+        self.canvas.create_window(180, 403, window=self.btn_login)  # posisi sesuai desain background
+
+    def halaman_login(self):
+        if hasattr(self, 'canvas_anggota'):
+            self.canvas_anggota.destroy()
+        if hasattr(self, 'btn_kembali2'):
+            self.btn_kembali2.destroy()
+
+        self.canvas.destroy()
+        self.btn_login.destroy()
+
+        current_dir = os.path.dirname(os.path.abspath(_file_))
+        login_path = os.path.join(current_dir, "images", "login.jpg")
+
+        img = Image.open(login_path)
+        img = img.resize((360, 640))
+        self.bg_login = ImageTk.PhotoImage(img)
+
+        self.canvas_login = tk.Canvas(self.root, width=360, height=640)
+        self.canvas_login.pack(fill="both", expand=True)
+        self.canvas_login.create_image(0, 0, anchor="nw", image=self.bg_login)
+
+        self.btn_anggota = tk.Button(self.root, text="ANGGOTA", font=("Helvetica", 12, "bold"),
+                                     bg="green", fg="white", width=15, command=self.halaman_anggota)
+        self.btn_project = tk.Button(self.root, text="PROJECT", font=("Helvetica", 12, "bold"),
+                                     bg="green", fg="white", width=15, command=self.halaman_project)
+        self.btn_kembali = tk.Button(self.root, text="KEMBALI", font=("Helvetica", 10),
+                                     command=self.kembali_ke_welcome)
+
+        self.canvas_login.create_window(180, 360, window=self.btn_anggota)
+        self.canvas_login.create_window(180, 420, window=self.btn_project)
+        self.canvas_login.create_window(180, 600, window=self.btn_kembali)
+
+    def halaman_anggota(self):
+        self.canvas_login.destroy()
+        self.btn_anggota.destroy()
+        self.btn_project.destroy()
+        self.btn_kembali.destroy()
+
+        current_dir = os.path.dirname(os.path.abspath(_file_))
+        anggota_path = os.path.join(current_dir, "images", "anggota.jpg")
+
+        img = Image.open(anggota_path)
+        img = img.resize((360, 640))
+        self.bg_anggota = ImageTk.PhotoImage(img)
+
+        self.canvas_anggota = tk.Canvas(self.root, width=360, height=640)
+        self.canvas_anggota.pack(fill="both", expand=True)
+        self.canvas_anggota.create_image(0, 0, anchor="nw", image=self.bg_anggota)
+
+        self.btn_kembali2 = tk.Button(self.root, text="KEMBALI", font=("Helvetica", 10),
+                                      command=self.halaman_login)
+        self.canvas_anggota.create_window(180, 600, window=self.btn_kembali2)
+
+    def halaman_project(self):
+        self.canvas_login.destroy()
+        self.btn_anggota.destroy()
+        self.btn_project.destroy()
+        self.btn_kembali.destroy()
+
+        self.project_window = tk.Toplevel(self.root)
+        self.project_window.title("Karate Scoreboard")
+        self.project_window.geometry("800x400")
+        self.project_window.configure(bg="#1E1E1E")
+
+        self.score_ao = 0
+        self.score_aka = 0
+        self.timer_active = False
+        self.time_left = 0
+
+        tk.Label(self.project_window, text="Division:", bg="#1E1E1E", fg="white", font=("Helvetica", 16)).pack(pady=(10, 0))
+
+        self.entry_ao = tk.Entry(self.project_window, bg="lightblue", font=("Helvetica", 14))
+        self.entry_ao.insert(0, "Write Ao Name")
+        self.entry_ao.pack(pady=5)
+
+        self.entry_aka = tk.Entry(self.project_window, bg="salmon", font=("Helvetica", 14))
+        self.entry_aka.insert(0, "Write Aka Name")
+        self.entry_aka.pack(pady=5)
+
+        self.label_score_ao = tk.Label(self.project_window, text=str(self.score_ao), bg="lightblue", font=("Helvetica", 48))
+        self.label_score_ao.pack(side=tk.LEFT, padx=(20, 10), pady=20)
+
+        self.label_score_aka = tk.Label(self.project_window, text=str(self.score_aka), bg="salmon", font=("Helvetica", 48))
+        self.label_score_aka.pack(side=tk.RIGHT, padx=(10, 20), pady=20)
+
+        tk.Button(self.project_window, text="+1 AO", command=self.add_score_ao, font=("Helvetica", 16)).pack(side=tk.LEFT, padx=5)
+        tk.Button(self.project_window, text="-1 AO", command=self.subtract_score_ao, font=("Helvetica", 16)).pack(side=tk.LEFT, padx=5)
+
+        tk.Button(self.project_window, text="+1 AKA", command=self.add_score_aka, font=("Helvetica", 16)).pack(side=tk.RIGHT, padx=5)
+        tk.Button(self.project_window, text="-1 AKA", command=self.subtract_score_aka, font=("Helvetica", 16)).pack(side=tk.RIGHT, padx=5)
+
+        tk.Button(self.project_window, text="START", command=self.start_timer, font=("Helvetica", 16)).pack(pady=5)
+
+        self.timer_label = tk.Label(self.project_window, text="00:00", bg="#1E1E1E", fg="white", font=("Helvetica", 48))
+        self.timer_label.pack(pady=10)
+
+        tk.Button(self.project_window, text="DONE", command=self.done, bg="green", fg="white", font=("Helvetica", 16)).pack(side=tk.LEFT, padx=10)
+        tk.Button(self.project_window, text="RESET", command=self.reset, bg="red", fg="white", font=("Helvetica", 16)).pack(side=tk.LEFT, padx=10)
+
+        tk.Button(self.project_window, text="KEMBALI", command=self.kembali_ke_login_dari_project, font=("Helvetica", 10)).pack(pady=10)
+
+    def add_score_ao(self):
+        self.score_ao += 1
+        self.label_score_ao.config(text=str(self.score_ao))
+
+    def subtract_score_ao(self):
+        self.score_ao -= 1
+        self.label_score_ao.config(text=str(self.score_ao))
+
+    def add_score_aka(self):
+        self.score_aka += 1
+        self.label_score_aka.config(text=str(self.score_aka))
+
+    def subtract_score_aka(self):
+        self.score_aka -= 1
+        self.label_score_aka.config(text=str(self.score_aka))
+
+    def start_timer(self):
+        if not self.timer_active:
+            self.time_left = 120  # 2 minutes
+            self.update_timer()
+            self.timer_active = True
+
+    def update_timer(self):
+        if self.time_left > 0:
+            minutes, seconds = divmod(self.time_left, 60)
+            self.timer_label.config(text=f"{minutes:02}:{seconds:02}")
+            self.time_left -= 1
+            self.root.after(1000, self.update_timer)
+        else:
+            self.timer_active = False
+
+    def done(self):
+        messagebox.showinfo("Game Over", "The game is finished!")
+
+    def reset(self):
+        self.score_ao = 0
+        self.score_aka = 0
+        self.label_score_ao.config(text=str(self.score_ao))
+        self.label_score_aka.config(text=str(self.score_aka))
+        self.timer_active = False
+        self.timer_label.config(text="00:00")
+
+    def kembali_ke_welcome(self):
+        self.canvas_login.destroy()
+        self.btn_anggota.destroy()
+        self.btn_project.destroy()
+        self.btn_kembali.destroy()
+        self.halaman_welcome()
+
+    def kembali_ke_login_dari_project(self):
+        self.project_window.destroy()
+        self.halaman_login()
+
+
+if _name_ == "_main_":
+    root = tk.Tk()
+    app = AplikasiKelompok(root)
+    root.mainloop()
